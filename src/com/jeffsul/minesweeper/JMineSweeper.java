@@ -31,8 +31,7 @@ import com.jeffsul.minesweeper.highscores.HighScoreEngine;
 import com.jeffsul.minesweeper.highscores.HighScoreFilter;
 
 @SuppressWarnings("serial")
-public class JMineSweeper extends JFrame implements MouseListener
-{	
+public class JMineSweeper extends JFrame implements MouseListener {	
 	private static final int WINDOW_WIDTH = 900;
 	private static final int WINDOW_HEIGHT = 700;
 	
@@ -68,12 +67,11 @@ public class JMineSweeper extends JFrame implements MouseListener
 	private int time;
 	
 	private boolean firstClick = true;
-	private boolean gameOver = false;
+	private boolean gameOver;
 	
 	private HighScoreEngine highScoreEngine;
 	
-	public JMineSweeper()
-	{	
+	public JMineSweeper() {	
 		super("JMineSweeper by Jeff Sullivan");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -82,7 +80,10 @@ public class JMineSweeper extends JFrame implements MouseListener
 		
 		mineField = new MineField();
 		
-		highScoreEngine = new HighScoreEngine(HIGH_SCORE_FILE, new HighScoreEngine.Type[] {HighScoreEngine.Type.INTEGER, HighScoreEngine.Type.STRING, HighScoreEngine.Type.INTEGER});
+		highScoreEngine = new HighScoreEngine(HIGH_SCORE_FILE, new HighScoreEngine.Type[] {
+		    HighScoreEngine.Type.INTEGER,
+		    HighScoreEngine.Type.STRING,
+		    HighScoreEngine.Type.INTEGER});
 		
 		initGame();
 				
@@ -90,8 +91,7 @@ public class JMineSweeper extends JFrame implements MouseListener
 		setVisible(true);
 	}
 	
-	private void populateScreen()
-	{
+	private void populateScreen() {
 		JPanel titlePanel = new JPanel();
 		JLabel titleLbl = new JLabel("JMineSweeper by Jeff Sullivan");
 		titleLbl.setFont(new Font("Monospaced", Font.BOLD, 24));
@@ -99,10 +99,8 @@ public class JMineSweeper extends JFrame implements MouseListener
 		add(titlePanel, BorderLayout.PAGE_START);
 		
 		JButton newGameBtn = new JButton("New Game");
-		newGameBtn.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
+		newGameBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				initGame();
 			}
 		});
@@ -115,10 +113,8 @@ public class JMineSweeper extends JFrame implements MouseListener
 		timePanel.add(new JLabel(" seconds"));
 		add(timePanel, BorderLayout.PAGE_END);
 		
-		timer = new Timer(1000, new ActionListener()
-		{
-			public void actionPerformed(ActionEvent event)
-			{
+		timer = new Timer(1000, new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
 				time++;
 				timeLbl.setText(Integer.toString(time));
 			}
@@ -135,20 +131,19 @@ public class JMineSweeper extends JFrame implements MouseListener
 		final JRadioButton insaneRadioBtn = createRadioButton("Insane", group, optionPane);
 		
 		JButton setOptionButton = new JButton("Set Options");
-		setOptionButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent event)
-			{
-				if (easyRadioBtn.isSelected())
+		setOptionButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if (easyRadioBtn.isSelected()) {
 					level = EASY_LEVEL;
-				else if (mediumRadioBtn.isSelected())
+				} else if (mediumRadioBtn.isSelected()) {
 					level = MEDIUM_LEVEL;
-				else if (hardRadioBtn.isSelected())
+				} else if (hardRadioBtn.isSelected()) {
 					level = HARD_LEVEL;
-				else if (extremeRadioBtn.isSelected())
+				} else if (extremeRadioBtn.isSelected()) {
 					level = EXTREME_LEVEL;
-				else if (insaneRadioBtn.isSelected())
+				} else if (insaneRadioBtn.isSelected()) {
 					level = INSANE_LEVEL;
+				}
 				initGame();
 			}
 		});
@@ -157,15 +152,15 @@ public class JMineSweeper extends JFrame implements MouseListener
 		final JPanel highScorePnl = new JPanel(new BorderLayout());
 		JPanel highScorePnlOptions = new JPanel();
 		highScorePnlOptions.add(new JLabel("Select a Level:"));
-		final JComboBox selectLevelCombo = new JComboBox(new String[] {"Easy", "Medium", "Hard", "Extreme", "Insane"});
-		selectLevelCombo.addItemListener(new ItemListener()
-		{
+		final JComboBox<String> selectLevelCombo = new JComboBox<String>
+		    (new String[] {"Easy", "Medium", "Hard", "Extreme", "Insane"});
+		selectLevelCombo.addItemListener(new ItemListener() {
 			private JTable tbl;
 			
-			public void itemStateChanged(ItemEvent event)
-			{
-				if (tbl != null)
+			public void itemStateChanged(ItemEvent event) {
+				if (tbl != null) {
 					highScorePnl.remove(tbl);
+				}
 				tbl = getHighScores(selectLevelCombo.getSelectedIndex());
 				highScorePnl.add(tbl.getTableHeader(), BorderLayout.PAGE_START);
 				highScorePnl.add(tbl, BorderLayout.CENTER);
@@ -180,16 +175,14 @@ public class JMineSweeper extends JFrame implements MouseListener
 		tabs.addTab("High Scores", highScorePnl);
 		mineFieldPnl = new JPanel();
 		tabs.addTab("Play Game", mineFieldPnl);
-		tabs.addChangeListener(new ChangeListener()
-		{
+		tabs.addChangeListener(new ChangeListener() {
 			JTable tbl = null;
-			public void stateChanged(ChangeEvent event) 
-			{
-				if (tabs.getSelectedIndex() == HIGH_SCORE_TAB_INDEX)
-				{
+			public void stateChanged(ChangeEvent event) {
+				if (tabs.getSelectedIndex() == HIGH_SCORE_TAB_INDEX) {
 					selectLevelCombo.setSelectedIndex(level);
-					if (tbl != null)
+					if (tbl != null) {
 						highScorePnl.remove(tbl);
+					}
 					tbl = getHighScores(selectLevelCombo.getSelectedIndex());
 					highScorePnl.add(tbl.getTableHeader(), BorderLayout.PAGE_START);
 					highScorePnl.add(tbl, BorderLayout.CENTER);
@@ -200,14 +193,14 @@ public class JMineSweeper extends JFrame implements MouseListener
 		add(tabs, BorderLayout.CENTER);
 	}
 	
-	private void initGame()
-	{
+	private void initGame() {
 		width = WIDTHS[level];
 		height = HEIGHTS[level];
 		mines = MINES[level];
 		
-		if (timer.isRunning())
+		if (timer.isRunning()) {
 			timer.stop();
+		}
 		time = 0;
 		
 		firstClick = true;
@@ -221,62 +214,60 @@ public class JMineSweeper extends JFrame implements MouseListener
 		repaint();
 	}
 	
-	public void mouseReleased(MouseEvent event)
-	{
-		if (gameOver)
+	public void mouseReleased(MouseEvent event) {
+		if (gameOver) {
 			return;
+		}
 		
-		if (event.getSource() instanceof JButton)
-		{
+		if (event.getSource() instanceof JButton) {
 			JButton button = (JButton) event.getSource();
-			if ((event.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK)
+			if ((event.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
 				mineField.flagButton(button);
-			else
-			{	
-				if (button.getText().equals("M"))
+			} else {	
+				if (button.getText().equals("M")) {
 					return;
+				}
 					
-				if (firstClick)
-				{
+				if (firstClick) {
 					firstClick = false;
 					mineField.generate(mines, button);
 					timer.start();
 				}
 					
-				if (!mineField.hitBlock(button))
-				{
+				if (!mineField.hitBlock(button)) {
 					button.setText("!");
 					gameLose();
-				}
-				else if (mineField.checkWin())
+				} else if (mineField.checkWin()) {
 					gameWin();
+				}
 			}
 		}
 	}
 	
-	private void gameLose()
-	{
+	private void gameLose() {
 		gameOver = true;
 		timer.stop();
 		JOptionPane.showMessageDialog(this, "Oh no. YOU LOST!", "POW!", JOptionPane.ERROR_MESSAGE);
 		initGame();
 	}
 	
-	private void gameWin()
-	{
+	private void gameWin() {
 		timer.stop();
-		String name = JOptionPane.showInputDialog(this, "Congratulations! Enter your name:", "You beat JMineSweeper!", JOptionPane.INFORMATION_MESSAGE);
-		if (name != null)
+		String name = JOptionPane.showInputDialog(this, "Congratulations! Enter your name:", "You beat JMineSweeper!",
+		    JOptionPane.INFORMATION_MESSAGE);
+		if (name != null) {
 			highScoreEngine.add(new Object[] {level, name, time}, "/");
+		}
 	}
 	
-	private JTable getHighScores(int lvl)
-	{
+	private JTable getHighScores(int lvl) {
 		HighScoreFilter filter = new HighScoreFilter(0, lvl, HighScoreFilter.Filter.EQUAL);
-		Object[][] scores = highScoreEngine.load("/", 25, 2, HighScoreEngine.SortDirection.ASC, new HighScoreFilter[] {filter});
+		Object[][] scores = highScoreEngine.load("/", 25, 2, HighScoreEngine.SortDirection.ASC,
+		    new HighScoreFilter[] {filter});
 		Object[][] data = new Object[scores.length][3];
-		for (int i = 0; i < scores.length; i++)
+		for (int i = 0; i < scores.length; i++) {
 			data[i] = new Object[] {'#' + (i + 1), scores[i][1], scores[i][2] + " seconds"};
+		}
 			
 		JTable scoreTable = new JTable(data, new String[] {"Rank", "Name", "Time"});
 		scoreTable.setEnabled(false);
@@ -284,13 +275,12 @@ public class JMineSweeper extends JFrame implements MouseListener
 		return scoreTable;
 	}
 	
-	public void mouseClicked(MouseEvent event) { }
-	public void mouseExited(MouseEvent event) { }
-	public void mousePressed(MouseEvent event) { }
-	public void mouseEntered(MouseEvent event) { }
+	public void mouseClicked(MouseEvent event) {}
+	public void mouseExited(MouseEvent event) {}
+	public void mousePressed(MouseEvent event) {}
+	public void mouseEntered(MouseEvent event) {}
 	
-	private JRadioButton createRadioButton(String label, ButtonGroup group, JPanel panel)
-	{
+	private JRadioButton createRadioButton(String label, ButtonGroup group, JPanel panel) {
 		JRadioButton radioBtn = new JRadioButton(label + " Level");
 		radioBtn.setFont(RADIO_BUTTON_FONT);
 		group.add(radioBtn);
@@ -298,8 +288,7 @@ public class JMineSweeper extends JFrame implements MouseListener
 		return radioBtn;
 	}
 	
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		new JMineSweeper();
 	}
 }
